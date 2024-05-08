@@ -1,0 +1,214 @@
+body {
+  margin: 0 200px;
+  overflow: scroll;
+}
+
+/* nav */
+nav {
+  width: 100%;
+  border-bottom: 3px solid black;
+}
+
+/* nav 태그 내에 navigation 이라는 클래스 명을 가진 태그의 속성 정의
+div는 블록 요소이므로, 기본적으로 column 형태로 태그들이 나열된다. 
+하위 태그들을 row 형태로 배열시키고 싶으면 flex 설정! 
+(기본값이 flex-direction : row) */
+nav .navigation {
+  margin: 10px 30px;
+  display: flex;
+}
+
+/* nav 내에 있는 요소들 세로 기준 가운데 정렬  */
+nav span {
+  display: flex;
+  align-items: center;
+}
+
+/* 인스타그램 아이콘 - 인스타그램 제목 - 프로필 아이콘 위치 조정 */
+.title {
+  padding-left: 20px;
+  flex: 2;
+}
+
+.icon1 {
+  width: 40px;
+  height: 40px;
+}
+
+/* 프로필 아이콘 태그의 끝에 붙도록 설정 */
+#icon2 {
+  width: 40px;
+  height: 40px;
+  flex: 1;
+  justify-content: flex-end;
+}
+
+/* header */
+/* 구분선 */
+header {
+  width: 100%;
+  border-bottom: 3px solid black;
+}
+
+/* 프로필 이미지 부분과, 프로필 이름 및 부가설명 부분 row 형태로 나열 */
+div.profile {
+  display: flex;
+  flex-direction: row;
+  margin: 30px;
+  gap: 5vw;
+}
+
+div.profileLeft {
+  display: flex;
+  align-items: center;
+}
+
+div.profileImg {
+  width: 150px;
+  /* 부모 요소의 너비 */
+  height: 150px;
+  /* 부모 요소의 높이 */
+  border: 1px solid gray;
+  border-radius: 50%;
+  /* 원형 모양 */
+  overflow: hidden;
+  /* 부모 요소의 영역을 벗어나는 부분은 숨김 */
+  display: flex;
+  /* 내부 요소들을 가운데 정렬하기 위해 Flexbox 사용 */
+  justify-content: center;
+  /* 가로 방향 가운데 정렬 */
+  align-items: center;
+  /* 세로 방향 가운데 정렬 */
+}
+
+.profileImg img {
+  max-width: 80%;
+  /* 이미지의 최대 너비를 부모 요소의 너비에 맞춤 */
+  max-height: 80%;
+  /* 이미지의 최대 높이를 부모 요소의 높이에 맞춤 */
+  object-fit: cover;
+  /* 이미지를 부모 요소 내에 비율을 유지하며 적절하게 맞춤 */
+}
+
+/* 불릿 없애기 + 들여쓰기 없애기 */
+ul {
+  list-style: none;
+  padding-left: 0px;
+}
+
+a {
+  text-decoration: none;
+  color: black;
+}
+
+a:hover {
+  color: blue;
+}
+
+/* section */
+section {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+div.number {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px;
+  align-items: center;
+  border-bottom: 1px solid gray;
+}
+
+div.gridImg {
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  /* grid-template-columns: repeat(auto-fill, minmax(350px, 3fr)); */
+  gap: 5px;
+
+  img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+}
+
+/* footer */
+footer div {
+  position: fixed;
+  bottom: 0px;
+
+  /* body의 margin 값을 제외한 너비로 설정 */
+  width: calc(100% - 400px);
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: white;
+  border-top: 1px solid gray;
+}
+
+/* 테블릿 가로, 테블릿 세로 (해상도 768px ~ 1023px)*/
+@media all and (min-width: 768px) and (max-width: 1023px) {
+  body {
+    margin: 0 auto;
+    overflow: scroll;
+  }
+  nav .navigation {
+    margin: 10px auto;
+    width: 90%; /* 네비게이션 가로폭을 화면 가로폭의 80%로 설정 */
+  }
+  div.profile {
+    margin: 30px auto;
+    max-width: 700px; /* 프로필 섹션의 최대 너비를 설정 */
+  }
+  div.gridImg {
+    padding: 20px;
+    max-width: 1000px; /* 그리드 이미지 섹션의 최대 너비를 설정 */
+    margin: 0 auto; /* 가운데 정렬 */
+  }
+  footer div {
+    width: 100%;
+  }
+}
+
+/* 모바일 가로, 모바일 세로 (해상도 480px ~ 767px)*/
+@media all and (max-width: 767px) {
+  body {
+    margin: 0;
+    overflow: scroll;
+  }
+  nav .navigation {
+    margin: 10px 30px;
+    width: 85%;
+  }
+  .title {
+    text-align: center;
+    font-size: 80%;
+  }
+  .icon1,
+  #icon2 {
+    width: 32px;
+    height: 32px;
+  }
+  div.profile {
+    margin: 15px;
+  }
+  div.profileImg {
+    width: 100px;
+    height: 100px;
+  }
+  div.profileRight {
+    font-size: 80%;
+  }
+  div.number {
+    padding: 10px;
+  }
+  div.gridImg {
+    padding: 20px;
+  }
+  footer div {
+    width: 100%;
+  }
+}
