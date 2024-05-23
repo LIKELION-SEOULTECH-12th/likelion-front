@@ -1,0 +1,90 @@
+body {
+  width: 350px;
+  margin: 100px auto 0;
+  min-height: 502px;
+}
+
+.joinBox {
+  border: 1px solid #dbdbdb;
+  height: 502px;
+  padding: 0 40px;
+}
+
+.logo {
+  width: 195px;
+  margin: 30px auto 0;
+  display: block;
+}
+
+.hook {
+  text-align: center;
+  font-size: 17px;
+  color: gray;
+  margin: 12px 0;
+}
+.inputBox {
+  margin-top: 15px;
+}
+
+input {
+  display: block;
+  border-radius: 4px;
+  padding: 10px 0 10px 10px;
+  box-sizing: border-box;
+  width: 100%;
+  background-color: #fafafa;
+  border: none;
+  border: 1px solid #dfdfdf;
+  &::placeholder {
+    font-size: 12px;
+    font-weight: 350;
+  }
+  &:focus {
+    outline: none;
+    border: 1px solid gray;
+  }
+}
+
+.email,
+.nm,
+.username,
+.pw {
+  margin-bottom: 6px;
+}
+
+.errorMessage {
+  color: red;
+  font-size: 11px;
+  display: none;
+  margin: 0 0 6px 2px;
+}
+
+button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px 0;
+  border-radius: 8px;
+  background-color: #67b5fa;
+  border: none;
+  width: 100%;
+  font-weight: bold;
+  color: white;
+  transition: background-color 0.4s;
+  text-align: center;
+  cursor: pointer;
+}
+
+.joinBox button:disabled {
+  cursor: default;
+}
+
+.joinBox button[type="submit"]:not([disabled]) {
+  background-color: #0095f6;
+}
+
+.info {
+  text-align: center;
+  padding: 25px 0;
+  font-size: 12px;
+  color: gray;
+}

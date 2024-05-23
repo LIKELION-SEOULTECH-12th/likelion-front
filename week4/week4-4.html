@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>회원가입</title>
+    <link rel="stylesheet" href="./css/week4-4.css" />
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const joinForm = document.querySelector(".joinForm");
+        const joinButton = document.querySelector('button[type="submit"]');
+        const emailInput = document.querySelector(".email");
+        const pwInput = document.querySelector(".pw");
+        const inputs = document.querySelectorAll(".joinForm input");
+
+        // 폼 리셋 이벤트 발생 시 폼 초기화
+        // 로그인 버튼 비활성화와 다른 방식으로 구현했으니 확인! -> joinForm.reset(); 으로 폼 초기화
+        joinForm.addEventListener("reset", function () {
+          joinButton.disabled = true;
+        });
+
+        // 입력 필드의 값이 변경될 때마다 회원가입 버튼 활성화 여부 확인
+        inputs.forEach((input) => {
+          input.addEventListener("input", toggleJoinButton);
+        });
+
+        // 회원가입 버튼 클릭 시 회원가입 시도
+        joinButton.addEventListener("click", attemptJoin);
+
+        function toggleJoinButton() {
+          const emailValue = emailInput.value;
+          const pwValue = pwInput.value;
+
+          let isEmailValid = true;
+          let isPasswordValid = true;
+
+          if (emailValue && !validateEmail(emailValue)) {
+            showError(emailInput, "올바른 이메일 형식이 아닙니다.");
+            isEmailValid = false;
+          } else {
+            clearError(emailInput);
+          }
+
+          if (pwValue && pwValue.length < 7) {
+            showError(pwInput, "비밀번호는 7자 이상이어야 합니다.");
+            isPasswordValid = false;
+          } else {
+            clearError(pwInput);
+          }
+
+          joinButton.disabled = !(
+            isEmailValid &&
+            isPasswordValid &&
+            emailValue &&
+            pwValue
+          );
+        }
+
+        function validateEmail(email) {
+          // 이메일 형식인지 확인하는 정규표현식
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          return emailRegex.test(email);
+        }
+
+        function showError(input, message) {
+          const errorMessage = input.nextElementSibling;
+          errorMessage.textContent = message;
+          errorMessage.style.display = "block";
+        }
+
+        function clearError(input) {
+          const errorMessage = input.nextElementSibling;
+          errorMessage.textContent = "";
+          errorMessage.style.display = "none";
+        }
+
+        function attemptJoin(event) {
+          event.preventDefault(); // 기본 이벤트(페이지 새로고침) 방지
+
+          const emailValue = emailInput.value;
+          const pwValue = pwInput.value;
+
+          if (validateEmail(emailValue) && pwValue.length >= 7) {
+            alert("정상적으로 회원가입 되었습니다.");
+            joinForm.reset();
+            //회원가입 성공 시 로그인 페이지로 이동
+            window.location.href = "./week4-2.html";
+          }
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <div class="joinBox">
+      <img src="../img/text_logo.png" alt="로고" class="logo" />
+      <div class="hook"><b>친구들의 사진과 동영상을 보려면 가입하세요.</b></div>
+      <form class="joinForm">
+        <div class="inputBox">
+          <input
+            type="text"
+            class="email"
+            placeholder="휴대폰 번호 또는 이메일 주소"
+          />
+          <div class="errorMessage"></div>
+          <input type="text" class="nm" placeholder="성명" />
+          <input type="text" class="username" placeholder="사용자 이름" />
+          <input type="password" class="pw" placeholder="비밀번호" />
+          <div class="errorMessage"></div>
+        </div>
+        <div class="buttonBox">
+          <button type="submit" disabled>가입</button>
+        </div>
+      </form>
+
+      <div class="info">
+        가입하면 Instagram의 <b>약관, 데이터 정책 및 쿠키 정책</b>에 동의하게
+        됩니다.
+      </div>
+    </div>
+  </body>
+</html>
