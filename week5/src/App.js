@@ -5,6 +5,8 @@ import Login from "./pages/Login/Login";
 import Signin from "./pages/Signin/Signin";
 import GlobalStyle from "./styles/GlobalStyle";
 import ProfileEdit from "./pages/Main/components/ProfileEdit";
+import SelectImage from "./pages/Upload/SelectImage";
+import ImagePost from "./pages/Upload/ImagePost";
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signin" element={<Signin />} />
         <Route path="/profileEdit" element={<ProfileEdit />} />
+        <Route path="/selectImage" element={<SelectImage />} />
+        <Route path="/imagePost" element={<ImagePost />} />
       </Routes>
     </div>
   );
