@@ -1,5 +1,7 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -12,17 +14,27 @@ const ProfileEditContainer = styled.div`
   }
   padding: 20px 15px;
 
-  .editHeader > span {
-    margin-right: 70px;
+  .editHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
   }
+
+  .left {
+    display: flex;
+    align-items: center;
+  }
+
   .saveBtn {
     width: 35px;
     height: 30px;
+    margin-right: 70px;
   }
+
   .editTitle {
-    font-family: "Pretendard-Bold";
     font-size: 30px;
   }
+
   .pic {
     text-align: center;
     display: flex;
@@ -30,20 +42,43 @@ const ProfileEditContainer = styled.div`
     align-items: center;
     margin: 50px 0 30px 0;
   }
+
   .picEdit {
     color: #0095f6;
     font-size: 14px;
   }
+
   .txtTitle {
     color: gray;
     font-size: 12px;
     margin-bottom: 10px;
   }
+
   .txtEdit {
+    font-family: "Pretendard-Regular";
+    width: 100%;
     font-size: 14px;
     padding-bottom: 10px;
     margin-bottom: 10px;
+    border: none;
     border-bottom: 1px solid darkgray;
+    &:focus {
+      outline: none;
+    }
+  }
+`;
+
+const TxtArea = styled.textarea`
+  font-family: "Pretendard-Regular";
+  width: 100%;
+  resize: none;
+  font-size: 14px;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border: none;
+  border-bottom: 1px solid darkgray;
+  &:focus {
+    outline: none;
   }
 `;
 
@@ -68,15 +103,69 @@ const Imgcontainer = styled.div`
 `;
 
 const ProfileEdit = () => {
+  const [profile, setProfile] = useState({
+    name: "",
+    username: "",
+    bio: "",
+  });
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProfileInfo = async () => {
+      try {
+        const response = await axios.get(
+          "http://127.0.0.1:8080/insta/user/info"
+        );
+        setProfile({
+          name: response.data.name,
+          username: response.data.username,
+          bio: response.data.bio,
+        });
+      } catch (error) {
+        console.error("프로필을 불러오는 데에 오류가 발생했습니다.", error);
+      } finally {
+        setLoading(false); // 성공 여부에 상관없이 로딩 상태 변경
+      }
+    };
+
+    fetchProfileInfo();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setProfile({
+      ...profile,
+      [name]: value,
+    });
+  };
+
+  const handleSave = () => {
+    axios
+      .put("http://localhost:8080/insta/user/info", profile)
+      .catch((error) => {
+        console.error("프로필 수정 도중에 오류가 발생했습니다.", error);
+      });
+  };
+
   return (
     <ProfileEditContainer>
       <div className="editHeader">
-        <span className="editSave">
-          <StyledLink to="/">
-            <img src="/img/arrow.png" alt="back button" className="saveBtn" />
-          </StyledLink>
-        </span>
-        <span className="editTitle">프로필 편집</span>
+        <div className="left">
+          <span className="save">
+            <StyledLink to="/">
+              <img
+                src="/img/arrow.png"
+                alt="back button"
+                className="saveBtn"
+                onClick={handleSave}
+              />
+            </StyledLink>
+          </span>
+          <span className="editTitle">
+            <b>프로필 편집</b>
+          </span>
+        </div>
       </div>
       <div className="pic">
         <Imgcontainer>
@@ -86,13 +175,34 @@ const ProfileEdit = () => {
       </div>
       <div className="txt">
         <div className="txtTitle">이름</div>
-        <div className="txtEdit">서버에서 이름을 받아와 수정할 부분</div>
+        <input
+          className="txtEdit"
+          type="text"
+          name="name"
+          value={loading ? "사용자 정보를 로드중입니다." : profile.name}
+          onChange={handleInputChange}
+          disabled={loading} // 로딩 중에는 입력 비활성화
+        />
         <div className="txtTitle">사용자 이름</div>
-        <div className="txtEdit">서버에서 닉네임을 받아와 수정할 부분</div>
+        <input
+          className="txtEdit"
+          type="text"
+          name="username"
+          value={loading ? "사용자 정보를 로드중입니다." : profile.username}
+          onChange={handleInputChange}
+          disabled={loading} // 로딩 중에는 입력 비활성화
+        />
         <div className="txtTitle">소개</div>
-        <div className="txtEdit">서버에서 소개글을 받아와 수정할 부분</div>
+        <TxtArea
+          className="txtEdit"
+          name="bio"
+          value={loading ? "사용자 정보를 로드중입니다." : profile.bio}
+          onChange={handleInputChange}
+          disabled={loading} // 로딩 중에는 입력 비활성화
+        />
       </div>
     </ProfileEditContainer>
   );
 };
+
 export default ProfileEdit;
