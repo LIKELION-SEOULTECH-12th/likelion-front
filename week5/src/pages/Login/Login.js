@@ -89,6 +89,7 @@ const Login = () => {
               className={
                 isJoinButtonDisabled ? "disabledButton" : "enabledButton"
               }
+              disabled={isJoinButtonDisabled}
             >
               로그인
             </button>

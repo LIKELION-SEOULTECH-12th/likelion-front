@@ -134,6 +134,7 @@ const Signin = () => {
               className={
                 isJoinButtonDisabled ? "disabledButton" : "enabledButton"
               }
+              disabled={isJoinButtonDisabled}
             >
               가입
             </button>
