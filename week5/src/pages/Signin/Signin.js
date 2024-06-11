@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 const Signin = () => {
+  const baseURL = "http://127.0.0.1:8080";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -9,6 +11,7 @@ const Signin = () => {
   const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(true);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     toggleJoinButton();
@@ -74,15 +77,42 @@ const Signin = () => {
   };
 
   // api 연결 부분
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (validateEmail(email) && password.length >= 7) {
-      alert("정상적으로 회원가입 되었습니다.");
-      handleReset();
-      window.location.href = "/";
+    try {
+      const response = await fetch(`${baseURL}/insta/user/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+          name: name,
+          username: username,
+        }),
+      });
+
+      if (response.status === 200) {
+        window.location.href = "/";
+      } else if (response.status === 400) {
+        setErrorMessage("회원가입에 실패하였습니다. 다시 시도해주세요.");
+      } else {
+        setErrorMessage("서버 오류가 발생하였습니다. 다시 시도하세요.");
+      }
+    } catch (error) {
+      setErrorMessage(
+        "네트워크 오류가 발생하였습니다. 인터넷 연결을 확인하세요."
+      );
     }
   };
+
+  if (validateEmail(email) && password.length >= 7) {
+    alert("정상적으로 회원가입 되었습니다.");
+    handleReset();
+    window.location.href = "/";
+  }
 
   return (
     <SigninContainer>
@@ -138,6 +168,7 @@ const Signin = () => {
             >
               가입
             </button>
+            {errorMessage && <div className="errorMessage">{errorMessage}</div>}
           </div>
         </form>
 

@@ -2,9 +2,12 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Login = () => {
+  const baseURL = "http://127.0.0.1:8080";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isJoinButtonDisabled, setIsJoinButtonDisabled] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     toggleJoinButton();
@@ -46,15 +49,31 @@ const Login = () => {
     return emailRegex.test(email);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (email === "test@test.com" && password === "1234567") {
-      alert("정상적으로 로그인 되었습니다.");
-      window.location.href = "/";
-    } else {
-      alert("아이디 또는 비밀번호가 일치하지 않습니다.");
-      handleReset();
+    try {
+      const response = await fetch(`${baseURL}/insta/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
+
+      if (response.status === 200) {
+        window.location.href = "/";
+      } else if (response.status === 400) {
+        setErrorMessage(
+          "로그인에 실패하였습니다. 아이디와 비밀번호를 확인하세요."
+        );
+      } else {
+        setErrorMessage("서버 오류가 발생하였습니다. 나중에 다시 시도하세요.");
+      }
+    } catch (error) {
+      setErrorMessage(
+        "네트워크 오류가 발생하였습니다. 인터넷 연결을 확인하세요."
+      );
     }
   };
 
@@ -94,6 +113,7 @@ const Login = () => {
               로그인
             </button>
           </div>
+          {errorMessage && <div className="errorMessage">{errorMessage}</div>}
         </form>
         <div className="orBox">
           <hr />
@@ -137,6 +157,12 @@ const LoginBorder = styled.div`
 
   .inputBox {
     margin-top: 30px;
+  }
+
+  .errorMessage {
+    color: red;
+    font-size: 11px;
+    margin: 0 0 6px 2px;
   }
 
   input {
