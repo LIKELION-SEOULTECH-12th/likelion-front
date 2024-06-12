@@ -90,7 +90,7 @@ const Signin = () => {
           email: email,
           password: password,
           name: name,
-          username: username,
+          nickName: username,
         }),
       });
 
