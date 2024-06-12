@@ -108,12 +108,6 @@ const Signin = () => {
     }
   };
 
-  if (validateEmail(email) && password.length >= 7) {
-    alert("정상적으로 회원가입 되었습니다.");
-    handleReset();
-    window.location.href = "/";
-  }
-
   return (
     <SigninContainer>
       <ContainerBorder>
