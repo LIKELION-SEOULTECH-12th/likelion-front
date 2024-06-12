@@ -11,7 +11,7 @@ const Footer = () => {
     <Footercontainer>
       <div>
         <img src="/img/home.png" alt="home icon" width="40px" height="40px" />
-        <StyledLink to="/selectImage">
+        <StyledLink to="/imagePost">
           <img
             src="/img/upload.png"
             alt="upload icon"

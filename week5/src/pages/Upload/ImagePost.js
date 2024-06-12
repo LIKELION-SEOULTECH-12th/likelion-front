@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
@@ -38,18 +38,36 @@ const ImagePostContainer = styled.div`
   }
   .view {
     width: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
   }
   .viewImage {
-    width: 100%;
-    height: auto;
+    width: 600px;
+    height: 600px;
+    object-fit: cover;
+    z-index: 1;
+  }
+  .deleteImageBtn {
+    display: block;
+    cursor: pointer;
+    font-size: 45px;
+    color: white;
+    -webkit-text-stroke: 1px black;
+    position: absolute;
+    top: 0px;
+    right: 10px;
+    z-index: 9;
   }
   .caption {
     width: 40%;
+    height: 600px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    border-top: 1px solid lightgray;
     position: relative;
+    margin-left: 20px;
   }
   .caption textarea {
     font-family: "Pretendard-Regular";
@@ -59,24 +77,25 @@ const ImagePostContainer = styled.div`
     font-size: 18px;
     margin-bottom: 20px;
     border: none;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
     resize: none;
     box-shadow: none;
-    border-bottom: 1px solid lightgray;
+    box-sizing: border-box;
   }
   .caption textarea:focus {
     outline: none;
   }
   .caption button {
     font-family: "Pretendard-Regular";
-    margin-left: 25px;
+    font-weight: bold;
+    color: white;
+    width: 100%;
     padding: 10px;
     font-size: 18px;
     background-color: #0095f6;
     border: none;
     border-radius: 8px;
-    width: 100%;
-    color: white;
-    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.4s;
     text-align: center;
@@ -94,8 +113,37 @@ const ImagePostContainer = styled.div`
   }
 `;
 
+const StyledFileInput = styled.label`
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: lightgray;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+  overflow: hidden;
+  position: relative;
+
+  input[type="file"] {
+    position: absolute;
+    font-size: 100px;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* WebKit browsers (Chrome, Safari, Edge) */
+  input[type="file"]::-webkit-file-upload-button {
+    visibility: hidden;
+  }
+`;
+
 const ImagePost = () => {
   const [caption, setCaption] = useState("");
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const handleChange = (event) => {
     const text = event.target.value;
@@ -103,6 +151,24 @@ const ImagePost = () => {
     if (text.length <= 1024) {
       setCaption(text);
     }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+      setSelectedFile(file);
+    }
+  };
+
+  const handleReselect = () => {
+    // 파일 선택 초기화
+    setImagePreview(null);
+    setSelectedFile(null);
   };
 
   const upload = () => {
@@ -114,7 +180,7 @@ const ImagePost = () => {
       <div className="postHeader">
         <div className="left">
           <span className="cancel">
-            <StyledLink to="/selectImage">
+            <StyledLink to="/">
               <img
                 src="/img/arrow.png"
                 alt="back button"
@@ -129,7 +195,20 @@ const ImagePost = () => {
       </div>
       <div className="content">
         <div className="view">
-          <img src="/img/post1.JPG" alt="post1" className="viewImage" />
+          {imagePreview && (
+            <>
+              <img src={imagePreview} alt="uploaded" className="viewImage" />
+              <div onClick={handleReselect} className="deleteImageBtn">
+                ×
+              </div>
+            </>
+          )}
+          {!imagePreview && (
+            <StyledFileInput>
+              파일 선택
+              <input type="file" onChange={handleFileChange} />
+            </StyledFileInput>
+          )}
         </div>
         <div className="caption">
           <textarea
@@ -143,7 +222,7 @@ const ImagePost = () => {
           <button
             type="button"
             onClick={upload}
-            disabled={caption.length === 0}
+            disabled={caption.length === 0 || !selectedFile}
           >
             공유하기
           </button>
