@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useState, useEffect } from "react";
 
 const Signin = () => {
-  const baseURL = "http://127.0.0.1:8080";
+  // const baseURL = "http://127.0.0.1:8080";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -81,7 +81,7 @@ const Signin = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${baseURL}/insta/user/signup`, {
+      const response = await fetch(`/insta/user/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
