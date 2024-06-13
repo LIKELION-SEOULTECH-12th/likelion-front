@@ -1,9 +1,9 @@
-import styled from "styled-components";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
 const Signin = () => {
-  // const baseURL = "http://127.0.0.1:8080";
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
@@ -14,8 +14,37 @@ const Signin = () => {
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
+    const toggleJoinButton = () => {
+      let isEmailValid = true;
+      let isPasswordValid = true;
+
+      if (email && !validateEmail(email)) {
+        setEmailError("올바른 이메일 형식이 아닙니다.");
+        isEmailValid = false;
+      } else {
+        setEmailError("");
+      }
+
+      if (password && password.length < 7) {
+        setPasswordError("비밀번호는 7자 이상이어야 합니다.");
+        isPasswordValid = false;
+      } else {
+        setPasswordError("");
+      }
+
+      setIsJoinButtonDisabled(
+        !(
+          isEmailValid &&
+          isPasswordValid &&
+          email &&
+          password &&
+          name &&
+          username
+        )
+      );
+    };
     toggleJoinButton();
-  }, [email, password]);
+  }, [email, password, name, username]);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -39,36 +68,9 @@ const Signin = () => {
     setName("");
     setUsername("");
     setIsJoinButtonDisabled(true);
-  };
-
-  const toggleJoinButton = () => {
-    let isEmailValid = true;
-    let isPasswordValid = true;
-
-    if (email && !validateEmail(email)) {
-      setEmailError("올바른 이메일 형식이 아닙니다.");
-      isEmailValid = false;
-    } else {
-      setEmailError("");
-    }
-
-    if (password && password.length < 7) {
-      setPasswordError("비밀번호는 7자 이상이어야 합니다.");
-      isPasswordValid = false;
-    } else {
-      setPasswordError("");
-    }
-
-    setIsJoinButtonDisabled(
-      !(
-        isEmailValid &&
-        isPasswordValid &&
-        email &&
-        password &&
-        name &&
-        username
-      )
-    );
+    setEmailError("");
+    setPasswordError("");
+    setErrorMessage("");
   };
 
   const validateEmail = (email) => {
@@ -76,7 +78,6 @@ const Signin = () => {
     return emailRegex.test(email);
   };
 
-  // api 연결 부분
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -95,13 +96,14 @@ const Signin = () => {
       });
 
       if (response.status === 200) {
-        window.location.href = "/";
+        navigate(`/login`);
       } else if (response.status === 400) {
         setErrorMessage("회원가입에 실패하였습니다. 다시 시도해주세요.");
       } else {
         setErrorMessage("서버 오류가 발생하였습니다. 다시 시도하세요.");
       }
     } catch (error) {
+      console.error("네트워크 오류:", error); // 네트워크 오류 등을 콘솔에 출력
       setErrorMessage(
         "네트워크 오류가 발생하였습니다. 인터넷 연결을 확인하세요."
       );
