@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const Signin = () => {
+  const baseURL = "http://127.0.0.1:8080";
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,7 +83,7 @@ const Signin = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`/insta/user/signup`, {
+      const response = await fetch(`${baseURL}/insta/user/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
