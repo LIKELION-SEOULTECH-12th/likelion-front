@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
@@ -144,11 +144,19 @@ const ImagePost = () => {
   const [caption, setCaption] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    // 로컬 스토리지에서 사용자 ID 가져오기
+    const storedUserId = localStorage.getItem("id");
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
+  }, []);
 
   const handleChange = (event) => {
     const text = event.target.value;
-    // 최대 글자수 제한
-    if (text.length <= 1024) {
+    if (text.length <= 255) {
       setCaption(text);
     }
   };
@@ -166,13 +174,44 @@ const ImagePost = () => {
   };
 
   const handleReselect = () => {
-    // 파일 선택 초기화
     setImagePreview(null);
     setSelectedFile(null);
   };
 
-  const upload = () => {
-    // 서버와 연동하여 업로드 기능 구현 필요
+  const upload = async () => {
+    try {
+      if (!selectedFile) {
+        alert("사진을 선택해주세요.");
+        return;
+      }
+
+      // FormData 객체 생성
+      const formData = new FormData();
+      formData.append("image", selectedFile);
+      formData.append("context", caption);
+      formData.append("memberId", userId);
+
+      // Fetch POST 요청 보내기
+      const response = await fetch("http://127.0.0.1:8080/insta/upload", {
+        method: "POST",
+        body: formData,
+        headers: {
+          // "Content-Type": "multipart/form-data",
+        },
+        credentials: "include", // CORS 문제 해결을 위해 credentials 설정
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const textResponse = await response.text();
+      console.log("업로드 성공 - 게시글 id:", textResponse);
+      alert(textResponse);
+    } catch (error) {
+      console.error("업로드 에러:", error);
+      alert("업로드 중 오류가 발생했습니다.");
+    }
   };
 
   return (
@@ -216,9 +255,8 @@ const ImagePost = () => {
             placeholder="문구를 입력하세요..."
             value={caption}
             onChange={handleChange}
-            maxLength={1024}
+            maxLength={255}
           ></textarea>
-          <span className="charCount">{caption.length}/1024</span>
           <button
             type="button"
             onClick={upload}
