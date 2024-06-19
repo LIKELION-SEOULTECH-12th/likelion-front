@@ -54,21 +54,49 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      const responseData = await response.json();
-      console.log("서버 응답:", responseData); // 응답 데이터 확인
+      console.log("응답 상태 코드:", response.status);
 
-      if (response.status === 200) {
-        localStorage.setItem("id", responseData.id); // userID 저장
-        navigate(`/`);
-      } else if (response.status === 400) {
-        setErrorMessage(
-          "로그인에 실패하였습니다. 아이디와 비밀번호를 확인하세요."
-        );
+      const contentType = response.headers.get("content-type");
+      console.log("응답 Content-Type:", contentType);
+
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        const responseData = await response.json();
+        console.log("서버 응답:", responseData);
+
+        if (response.status === 200) {
+          localStorage.setItem("id", responseData.id);
+          alert("로그인 성공!");
+          navigate(`/`);
+        } else if (response.status === 400) {
+          // 잘못된 JSON 형식으로 body 보내기 (예: 콤마 누락)
+          // 필수 파라미터 누락(아이디 혹은 비밀번호 입력 안 하기)
+          setErrorMessage("요청이 잘못되었습니다. 입력 데이터를 확인하세요.");
+        } else if (response.status === 401) {
+          // 아이디나 비밀번호 틀렸을 경우
+          setErrorMessage(
+            "로그인에 실패하였습니다. 아이디와 비밀번호를 확인하세요."
+          );
+        } else {
+          setErrorMessage(
+            "서버 오류가 발생하였습니다. 나중에 다시 시도하세요."
+          );
+        }
       } else {
-        setErrorMessage("서버 오류가 발생하였습니다. 나중에 다시 시도하세요.");
+        const responseText = await response.text();
+        console.log("서버 응답 (텍스트):", responseText);
+
+        if (response.status === 401) {
+          setErrorMessage(
+            "로그인에 실패하였습니다. 아이디와 비밀번호를 확인하세요."
+          );
+        } else {
+          setErrorMessage(
+            "서버 오류가 발생하였습니다. 나중에 다시 시도하세요."
+          );
+        }
       }
     } catch (error) {
-      console.error("서버 요청 오류:", error); // 네트워크 오류 등을 콘솔에 출력
+      console.error("서버 요청 오류:", error);
       setErrorMessage(
         "네트워크 오류가 발생하였습니다. 인터넷 연결을 확인하세요."
       );

@@ -92,14 +92,19 @@ const Signin = () => {
           email: email,
           password: password,
           name: name,
-          nickName: username,
+          nickname: username,
         }),
       });
 
-      if (response.status === 200) {
+      if (response.status === 201) {
+        alert("회원가입 성공!");
         navigate(`/login`);
-      } else if (response.status === 400) {
+      } else if (response.status === 500) {
         setErrorMessage("회원가입에 실패하였습니다. 다시 시도해주세요.");
+      } else if (response.status === 409) {
+        setErrorMessage(
+          "이미 존재하는 이메일 또는 사용자 이름입니다. 다시 시도해주세요."
+        );
       } else {
         setErrorMessage("서버 오류가 발생하였습니다. 다시 시도하세요.");
       }
