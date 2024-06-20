@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
@@ -144,13 +145,14 @@ const ImagePost = () => {
   const [caption, setCaption] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const [memberId, setMemberId] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // 로컬 스토리지에서 사용자 ID 가져오기
-    const storedUserId = localStorage.getItem("id");
-    if (storedUserId) {
-      setUserId(storedUserId);
+    const memberId = localStorage.getItem("id");
+    if (memberId) {
+      setMemberId(memberId);
     }
   }, []);
 
@@ -189,7 +191,7 @@ const ImagePost = () => {
       const formData = new FormData();
       formData.append("image", selectedFile);
       formData.append("context", caption);
-      formData.append("memberId", userId);
+      formData.append("memberId", memberId);
 
       // Fetch POST 요청 보내기
       const response = await fetch("http://127.0.0.1:8080/insta/upload", {
@@ -207,7 +209,8 @@ const ImagePost = () => {
 
       const textResponse = await response.text();
       console.log("업로드 성공 - 게시글 id:", textResponse);
-      alert(textResponse);
+      alert("성공적으로 업로드 되었습니다!");
+      navigate(`/`);
     } catch (error) {
       console.error("업로드 에러:", error);
       alert("업로드 중 오류가 발생했습니다.");
